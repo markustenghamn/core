@@ -81,7 +81,7 @@ class Util {
 		$this->privateKeyPath =
 				$this->encryptionDir . '/' . $this->userId . '.private.key'; // e.g. data/admin/admin.private.key
 		// make sure that the owners home is mounted
-		\OC\Files\Filesystem::initMountPoints($userId);
+		\OC::$server->setupFilesystem($userId);
 
 		if (\OCA\Encryption\Helper::isPublicAccess()) {
 			$this->keyId = $this->publicShareKeyId;
@@ -1215,7 +1215,7 @@ class Util {
 			}
 
 			// NOTE: Bah, this dependency should be elsewhere
-			\OC\Files\Filesystem::initMountPoints($fileOwnerUid);
+			\OC::$server->setupFilesystem($fileOwnerUid);
 
 			// If the file owner is the currently logged in user
 			if ($fileOwnerUid === $this->userId) {

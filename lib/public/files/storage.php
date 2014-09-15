@@ -337,6 +337,11 @@ interface Storage {
 	public function instanceOfStorage($class);
 }
 
-interface IHomeStorage {
-
+interface IHomeStorage extends Storage {
+	/**
+	 * Get the user to which the home storage belongs
+	 *
+	 * @return \OCP\IUser
+	 */
+	public function getUser();
 }

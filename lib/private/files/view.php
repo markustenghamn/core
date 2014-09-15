@@ -804,9 +804,6 @@ class View {
 		if ($path && Cache\Scanner::isPartialFile($path)) {
 			return false;
 		}
-		if (!Filesystem::$loaded) {
-			return false;
-		}
 		$defaultRoot = Filesystem::getRoot();
 		if ($defaultRoot === null) {
 			return false;

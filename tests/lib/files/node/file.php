@@ -8,6 +8,7 @@
 
 namespace Test\Files\Node;
 
+use OC\Files\Storage\Loader;
 use OCP\Files\NotFoundException;
 use OCP\Files\NotPermittedException;
 use OC\Files\View;
@@ -82,7 +83,7 @@ class File extends \Test\TestCase {
 		 * @var \OC\Files\View | \PHPUnit_Framework_MockObject_MockObject $view
 		 */
 		$view = $this->getMock('\OC\Files\View');
-		$root = new \OC\Files\Node\Root($manager, $view, $this->user);
+		$root = new \OC\Files\Node\Root($manager, new Loader(), $view);
 		$root->listen('\OC\Files', 'preDelete', $preListener);
 		$root->listen('\OC\Files', 'postDelete', $postListener);
 
@@ -139,7 +140,7 @@ class File extends \Test\TestCase {
 		 * @var \OC\Files\View | \PHPUnit_Framework_MockObject_MockObject $view
 		 */
 		$view = $this->getMock('\OC\Files\View');
-		$root = new \OC\Files\Node\Root($manager, $view, $this->user);
+		$root = new \OC\Files\Node\Root($manager, new Loader(), $view);
 
 		$hook = function ($file) {
 			throw new \Exception('Hooks are not supposed to be called');
@@ -262,7 +263,7 @@ class File extends \Test\TestCase {
 		 * @var \OC\Files\View | \PHPUnit_Framework_MockObject_MockObject $view
 		 */
 		$view = $this->getMock('\OC\Files\View');
-		$root = new \OC\Files\Node\Root($manager, $view, $this->user);
+		$root = new \OC\Files\Node\Root($manager, new Loader(), $view);
 
 		$hook = function ($file) {
 			throw new \Exception('Hooks are not supposed to be called');
@@ -298,7 +299,7 @@ class File extends \Test\TestCase {
 		 * @var \OC\Files\View | \PHPUnit_Framework_MockObject_MockObject $view
 		 */
 		$view = $this->getMock('\OC\Files\View');
-		$root = new \OC\Files\Node\Root($manager, new $view, $this->user);
+		$root = new \OC\Files\Node\Root($manager, new Loader(), $view);
 
 		$hooksCalled = 0;
 		$hook = function ($file) use (&$hooksCalled) {
@@ -339,7 +340,7 @@ class File extends \Test\TestCase {
 		 * @var \OC\Files\View | \PHPUnit_Framework_MockObject_MockObject $view
 		 */
 		$view = $this->getMock('\OC\Files\View');
-		$root = new \OC\Files\Node\Root($manager, $view, $this->user);
+		$root = new \OC\Files\Node\Root($manager, new Loader(), $view);
 
 		$hook = function ($file) {
 			throw new \Exception('Hooks are not supposed to be called');
@@ -366,7 +367,7 @@ class File extends \Test\TestCase {
 		 * @var \OC\Files\View | \PHPUnit_Framework_MockObject_MockObject $view
 		 */
 		$view = $this->getMock('\OC\Files\View');
-		$root = new \OC\Files\Node\Root($manager, $view, $this->user);
+		$root = new \OC\Files\Node\Root($manager, new Loader(), $view);
 
 		$hook = function () {
 			throw new \Exception('Hooks are not supposed to be called');
@@ -393,7 +394,7 @@ class File extends \Test\TestCase {
 		 * @var \OC\Files\View | \PHPUnit_Framework_MockObject_MockObject $view
 		 */
 		$view = $this->getMock('\OC\Files\View');
-		$root = new \OC\Files\Node\Root($manager, new $view, $this->user);
+		$root = new \OC\Files\Node\Root($manager, new Loader(), $view);
 
 		$hook = function () {
 			throw new \Exception('Hooks are not supposed to be called');

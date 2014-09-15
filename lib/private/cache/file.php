@@ -21,7 +21,7 @@ class File {
 			return $this->storage;
 		}
 		if(\OC_User::isLoggedIn()) {
-			\OC\Files\Filesystem::initMountPoints(\OC_User::getUser());
+			\OC::$server->setupFilesystem(\OC_User::getUser());
 			$this->storage = new \OC\Files\View('/' . \OC_User::getUser() . '/cache');
 			return $this->storage;
 		}else{

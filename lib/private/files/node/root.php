@@ -43,34 +43,39 @@ class Root extends Folder implements Emitter {
 	private $mountManager;
 
 	/**
+	 * @var \OC\Files\Storage\Loader
+	 */
+	private $loader;
+
+	/**
 	 * @var \OC\Hooks\PublicEmitter
 	 */
 	private $emitter;
 
 	/**
-	 * @var \OC\User\User $user
-	 */
-	private $user;
-
-	/**
 	 * @param \OC\Files\Mount\Manager $manager
+	 * @param \OC\Files\Storage\Loader $loader
 	 * @param \OC\Files\View $view
-	 * @param \OC\User\User $user
 	 */
-	public function __construct($manager, $view, $user) {
+	public function __construct($manager, $loader, $view) {
 		parent::__construct($this, $view, '');
+		$this->loader = $loader;
 		$this->mountManager = $manager;
-		$this->user = $user;
 		$this->emitter = new PublicEmitter();
 	}
 
 	/**
-	 * Get the user for which the filesystem is setup
-	 *
-	 * @return \OC\User\User
+	 * @return \OC\Files\Mount\Manager
 	 */
-	public function getUser() {
-		return $this->user;
+	public function getMountManager() {
+		return $this->mountManager;
+	}
+
+	/**
+	 * @return \OC\Files\Storage\Loader
+	 */
+	public function getStorageLoader() {
+		return $this->loader;
 	}
 
 	/**
@@ -306,5 +311,14 @@ class Root extends Folder implements Emitter {
 	 */
 	public function getName() {
 		return '';
+	}
+
+	/**
+	 * Get the root folder of the filesystem
+	 *
+	 * @return \OCP\Files\Folder
+	 */
+	public function getRoot() {
+		return $this;
 	}
 }

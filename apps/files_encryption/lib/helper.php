@@ -71,6 +71,10 @@ class Helper {
 		\OCP\Util::connectHook('OC_Filesystem', 'post_umount', 'OCA\Encryption\Hooks', 'postUmount');
 		\OCP\Util::connectHook('OC_Filesystem', 'umount', 'OCA\Encryption\Hooks', 'preUmount');
 		\OCP\Util::connectHook('\OC\Core\LostPassword\Controller\LostController', 'post_passwordReset', 'OCA\Encryption\Hooks', 'postPasswordReset');
+
+		$factory = \OC::$server->getFilesystemFactory();
+		$factory->listen('\OC\Files','preCopySkeleton', array('OCA\Encryption\Hooks', 'preCopySkeleton'));
+		$factory->listen('\OC\Files', 'postCopySkeleton', array('OCA\Encryption\Hooks', 'postCopySkeleton'));
 	}
 
 	/**
