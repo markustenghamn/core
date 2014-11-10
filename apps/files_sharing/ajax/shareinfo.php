@@ -34,7 +34,7 @@ $path = $data['realPath'];
 $isWritable = $linkItem['permissions'] & (\OCP\PERMISSION_UPDATE | \OCP\PERMISSION_CREATE);
 if (!$isWritable) {
 	\OC\Files\Filesystem::addStorageWrapper('readonly', function ($mountPoint, $storage) {
-		return new \OCA\Files_Sharing\ReadOnlyWrapper(array('storage' => $storage));
+		return new \OC\Files\Storage\Wrapper\PermissionsMask(array('storage' => $storage, \OCP\PERMISSION_READ));
 	});
 }
 
