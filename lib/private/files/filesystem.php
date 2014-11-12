@@ -370,7 +370,7 @@ class Filesystem {
 		self::mountCacheDir($user);
 
 		// Chance to mount for other storages
-		\OC_Hook::emit('OC_Filesystem', 'post_initMountPoints', array('user' => $user, 'user_dir' => $root));
+		\OC_Hook::emit('OC_Filesystem', 'post_initMountPoints', array('user' => $user, 'user_dir' => $root, 'user_object' => $userObject));
 	}
 
 	/**
