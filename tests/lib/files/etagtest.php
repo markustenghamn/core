@@ -25,7 +25,7 @@ class EtagTest extends \PHPUnit_Framework_TestCase {
 
 	public function setUp() {
 		\OC_Hook::clear('OC_Filesystem', 'setup');
-		\OCP\Util::connectHook('OC_Filesystem', 'setup', '\OC\Files\Storage\Shared', 'setup');
+		\OCP\Util::connectHook('OC_Filesystem', 'post_initMountPoints', '\OCA\Files_Sharing\MountManager', 'setup');
 		\OCP\Share::registerBackend('file', 'OC_Share_Backend_File');
 		\OCP\Share::registerBackend('folder', 'OC_Share_Backend_Folder', 'file');
 

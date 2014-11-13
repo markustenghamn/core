@@ -110,7 +110,7 @@ class Cache extends \PHPUnit_Framework_TestCase {
 		$this->cache->put($file3, $fileData['foo']);
 
 		$content = $this->cache->getFolderContents($folder);
-		$this->assertEquals(count($content), 2);
+		$this->assertCount(2, $content);
 		foreach ($content as $cachedData) {
 			$data = $fileData[$cachedData['name']];
 			foreach ($data as $name => $value) {

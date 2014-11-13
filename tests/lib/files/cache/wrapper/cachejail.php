@@ -54,4 +54,12 @@ class CacheJail extends Cache {
 		$this->assertFalse($this->cache->inCache('foobar'));
 		$this->assertTrue($this->sourceCache->inCache('folder/foobar'));
 	}
+
+	function testGetById() {
+		//not supported
+	}
+
+	function testGetIncomplete() {
+
+	}
 }

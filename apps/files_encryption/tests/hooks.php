@@ -73,7 +73,7 @@ class Test_Encryption_Hooks extends \PHPUnit_Framework_TestCase {
 		// clear share hooks
 		\OC_Hook::clear('OCP\\Share');
 		\OC::registerShareHooks();
-		\OCP\Util::connectHook('OC_Filesystem', 'setup', '\OC\Files\Storage\Shared', 'setup');
+		\OCP\Util::connectHook('OC_Filesystem', 'post_initMountPoints', '\OCA\Files_Sharing\MountManager', 'setup');
 
 		// Filesystem related hooks
 		\OCA\Encryption\Helper::registerFilesystemHooks();
