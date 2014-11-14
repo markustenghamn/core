@@ -20,7 +20,14 @@ echo "Docker executable found - setup docker"
 
 ## webdav
 
-docker run -d -e USERNAME=test -e PASSWORD=test -p 8888:80 morrisjobke/webdav
+# docker parameters
+# -d run in background
+# -P map internal ports to a unused high port on the host (between 49153 and 65535)
+# -e set env variables
+container=`docker run -d -P -e USERNAME=test -e PASSWORD=test morrisjobke/webdav`
+
+# get mapped port on host for internal port 80 - output is IP:PORT - we need to extract the port with 'cut'
+port=`docker port $container 80 | cut -f 2 -d :`
 
 # This sed command will change the webdav config
 #
@@ -41,4 +48,4 @@ docker run -d -e USERNAME=test -e PASSWORD=test -p 8888:80 morrisjobke/webdav
 #          BEGIN           END  |BEFORE    AFTER
 #        111111111111111   22    33333 44444444444
 sed -i "/'webdav'=>array/,/),/ s/run.*/run'=>true,/"                         apps/files_external/tests/config.php
-sed -i "/'webdav'=>array/,/),/ s/host.*/host'=>'localhost:8888\/webdav',/"   apps/files_external/tests/config.php
+sed -i "/'webdav'=>array/,/),/ s/host.*/host'=>'localhost:$port\/webdav',/"   apps/files_external/tests/config.php
