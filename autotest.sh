@@ -65,11 +65,15 @@ if [ -f config/config.php ]; then
 	mv config/config.php config/config-autotest-backup.php
 fi
 
+./setupDocker.sh
+
 function restore_config {
 	# Restore existing config
 	if [ -f config/config-autotest-backup.php ]; then
 		mv config/config-autotest-backup.php config/config.php
 	fi
+	# Restore docker setup and change config back
+	./stopDocker.sh
 }
 
 # restore config on exit, even when killed
