@@ -6,7 +6,7 @@
 # against. It will also change the files_external config to use the docker
 # container as testing environment. This is reverted in stopDocker.sh
 #
-# @author Morris Jobker
+# @author Morris Jobke
 # @copyright 2014 Morris Jobke hey@morrisjobke.de
 #
 

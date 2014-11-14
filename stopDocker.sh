@@ -5,7 +5,7 @@
 # This script stops the docker container the files_external tests were run
 # against. It will also revert the config changes done in setupDocker.sh
 #
-# @author Morris Jobker
+# @author Morris Jobke
 # @copyright 2014 Morris Jobke hey@morrisjobke.de
 #
 
