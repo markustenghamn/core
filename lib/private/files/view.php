@@ -1067,6 +1067,8 @@ class View {
 			}
 		}
 
+		$result = \OC_FileProxy::runPostProxies('getDirectoryContents', $directory, $result);
+
 		return $result;
 	}
 

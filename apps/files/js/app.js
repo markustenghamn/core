@@ -41,10 +41,29 @@
 		fileList: null,
 
 		/**
+		 * Files app plugins
+		 */
+		_plugins: [],
+
+		/**
 		 * Initializes the files app
 		 */
 		initialize: function() {
+			var self = this;
 			this.navigation = new OCA.Files.Navigation($('#app-navigation'));
+
+			// initialize plugins
+			_.each(this._plugins, function(plugin) {
+				try {
+					if (_.isFunction(plugin)) {
+						plugin = plugin();
+					}
+					plugin.apply(self);
+				}
+				catch (e) {
+					console.error('Error initializing plugin ' + plugin.name, e);
+				}
+			});
 
 			var urlParams = OC.Util.History.parseUrlQuery();
 			var fileActions = new OCA.Files.FileActions();
@@ -211,8 +230,27 @@
 				params.view = view;
 			}
 			OC.Util.History.pushState(params);
+		},
+
+		/**
+		 * Registers a files app plugin
+		 *
+		 * @param {OCA.Files.Plugin} plugin
+		 */
+		registerPlugin: function(plugin) {
+			this._plugins.push(plugin);
 		}
 	};
+
+	/**
+	 * Files app plugin
+	 *
+	 * @todo make this a real class in the future
+	 * @typedef {Object} OCA.Files.Plugin
+	 *
+	 * @property {Function} initialize function to initialize the plugin,
+	 * extend the files app, takes the files app as argument
+	 */
 })();
 
 $(document).ready(function() {

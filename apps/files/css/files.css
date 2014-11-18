@@ -435,7 +435,7 @@ table td.filename .uploadtext {
 	padding: 17px 14px;
 }
 
-#fileList .action.action-share-notification span, #fileList a {
+#fileList .action.action-share-notification span, #fileList a.name {
 	cursor: default !important;
 }
 

@@ -202,6 +202,7 @@ $(document).ready(function() {
 	// FIXME: HACK: do not init when running unit tests, need a better way
 	if (!window.TESTING) {
 		if (!_.isUndefined(OC.Share) && !_.isUndefined(OCA.Files)) {
+			// TODO: make this a files plugin
 			OCA.Sharing.Util.initialize(OCA.Files.fileActions);
 		}
 	}

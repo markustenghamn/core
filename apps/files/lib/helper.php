@@ -122,6 +122,9 @@ class Helper
 		$entry['size'] = $i['size'];
 		$entry['type'] = $i['type'];
 		$entry['etag'] = $i['etag'];
+		if (isset($i['tags'])) {
+			$entry['tags'] = $i['tags'];
+		}
 		if (isset($i['displayname_owner'])) {
 			$entry['shareOwner'] = $i['displayname_owner'];
 		}
