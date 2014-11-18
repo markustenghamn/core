@@ -6,8 +6,6 @@
 # @copyright 2012, 2013 Thomas Müller thomas.mueller@tmit.eu
 #
 
-set -e
-
 #$EXECUTOR_NUMBER is set by Jenkins and allows us to run autotest in parallel
 DATABASENAME=oc_autotest$EXECUTOR_NUMBER
 DATABASEUSER=oc_autotest$EXECUTOR_NUMBER
@@ -204,17 +202,54 @@ EOF
 	#test execution
 	echo "Testing with $1 ..."
 	cd tests
-	rm -rf "coverage-html-$1"
-	mkdir "coverage-html-$1"
-	php -f enable_all.php | grep -i -C9999 error && echo "Error during setup" && exit 101
+	rm -rf "coverage-external-html-$1"
+	mkdir "coverage-external-html-$1"
+	# just enable files_external
+	php ../occ app:enable files_external
 	if [ -z "$NOCOVERAGE" ]; then
-		"$PHPUNIT" --configuration phpunit-autotest.xml --log-junit "autotest-results-$1.xml" --coverage-clover "autotest-clover-$1.xml" --coverage-html "coverage-html-$1" "$2" "$3"
+		#"$PHPUNIT" --configuration phpunit-autotest-external.xml --log-junit "autotest-external-results-$1.xml" --coverage-clover "autotest-external-clover-$1.xml" --coverage-html "coverage-external-html-$1"
 		RESULT=$?
 	else
 		echo "No coverage"
-		"$PHPUNIT" --configuration phpunit-autotest.xml --log-junit "autotest-results-$1.xml" "$2" "$3"
+		#"$PHPUNIT" --configuration phpunit-autotest-external.xml --log-junit "autotest-external-results-$1.xml"
 		RESULT=$?
 	fi
+
+    FILES_EXTERNAL_BACKEND_PATH=../apps/files\_external/tests/bankends
+    FILES_EXTERNAL_BACKEND_ENV_PATH=../apps/files_external/tests/env
+
+	for startFile in `ls -1 $FILES_EXTERNAL_BACKEND_ENV_PATH | grep start`; do
+	    echo "start: $startFile"
+	    # execute start file
+	    ./$FILES_EXTERNAL_BACKEND_ENV_PATH/$startFile
+
+	    # getting backend to test from filename
+	    # it's the part between the dots startSomething.TestToRun.sh
+	    testToRun=`echo $startFile | cut -d '.' -f 2`
+
+
+	    echo $FILES_EXTERNAL_BACKEND_PATH/$testToRun.php
+
+        # run the specific test
+        if [ -z "$NOCOVERAGE" ]; then
+            rm -rf "coverage-external-html-$startFile-$1"
+            mkdir "coverage-external-html-$startFile-$1"
+            "$PHPUNIT" --configuration phpunit-autotest-external.xml --log-junit "autotest-external-results--$startFile-$1.xml" --coverage-clover "autotest-external-clover-$startFile-$1.xml" --coverage-html "coverage-external-html-$startFile-$1" "../apps/files_external/tests/bankends/$testToRun.php"
+            RESULT=$?
+        else
+            echo "No coverage"
+            "$PHPUNIT" --configuration phpunit-autotest-external.xml --log-junit "autotest-external-results-$startFile-$1.xml" ../apps/files_external/tests/bankends/$testToRun.php
+            RESULT=$?
+        fi
+
+	    # calculate stop file
+	    stopFile=`echo "$startFile" | replace start stop`
+	    echo "stop: $stopFile"
+	    if [ -f $FILES_EXTERNAL_BACKEND_ENV_PATH/$stopFile ]; then
+	        # execute stop file if existant
+	        ./$FILES_EXTERNAL_BACKEND_ENV_PATH/$stopFile
+	    fi
+	done;
 }
 
 #
@@ -227,7 +262,7 @@ if [ -z "$1" ]
 		execute_tests $DBCONFIG
 	done
 else
-	execute_tests "$1" "$2" "$3"
+	execute_tests "$1"
 fi
 
 cd "$BASEDIR"

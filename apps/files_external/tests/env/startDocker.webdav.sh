@@ -17,6 +17,8 @@ fi
 
 echo "Docker executable found - setup docker"
 
+# retrieve current folder to place the config in the parent folder
+thisFolder=`echo $0 | replace "env/startDocker.webdav.sh" ""`
 
 ## webdav
 
@@ -29,23 +31,20 @@ container=`docker run -d -P -e USERNAME=test -e PASSWORD=test morrisjobke/webdav
 # get mapped port on host for internal port 80 - output is IP:PORT - we need to extract the port with 'cut'
 port=`docker port $container 80 | cut -f 2 -d :`
 
-# This sed command will change the webdav config
-#
-#   1 and 2 limits the replacement part
-#     1 is the start expression
-#     2 is the end expression
-#     => replace between: 'webdav'O=>array( and ),
-#
-#   3 and 4 is the actual replacement of
-#     3 the expression to catch the current value
-#     4 what should there be inserted
-#     => replace: run.* by run'=>true,
-#
-#           This restricts sed  |
-#          command to following |      with
-#                 part:         |
-#             (webdav config)   |
-#          BEGIN           END  |BEFORE    AFTER
-#        111111111111111   22    33333 44444444444
-sed -i "/'webdav'=>array/,/),/ s/run.*/run'=>true,/"                         apps/files_external/tests/config.php
-sed -i "/'webdav'=>array/,/),/ s/host.*/host'=>'localhost:$port\/webdav',/"   apps/files_external/tests/config.php
+
+cat > $thisFolder/config.webdav.php <<DELIM
+<?php
+
+return array(
+    'run'=>true,
+    'host'=>'localhost:$port/webdav',
+    'user'=>'test',
+    'password'=>'test',
+    'root'=>'',
+    // wait delay in seconds after write operations
+    // (only in tests)
+    // set to higher value for lighttpd webdav
+    'wait'=> 0
+);
+
+DELIM

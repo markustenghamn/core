@@ -16,15 +16,18 @@ class DAV extends Storage {
 		parent::setUp();
 
 		$id = $this->getUniqueID();
-		$this->config = include('files_external/tests/config.php');
-		if ( ! is_array($this->config) or ! isset($this->config['webdav']) or ! $this->config['webdav']['run']) {
+		if(!file_exists('files_external/tests/config.webdav.php')) {
 			$this->markTestSkipped('WebDAV backend not configured');
 		}
-		if (isset($this->config['webdav']['wait'])) {
-			$this->waitDelay = $this->config['webdav']['wait'];
+		$config = include('files_external/tests/config.webdav.php');
+		if ( ! is_array($config) or !$config['run']) {
+			$this->markTestSkipped('WebDAV backend not configured');
 		}
-		$this->config['webdav']['root'] .= '/' . $id; //make sure we have an new empty folder to work in
-		$this->instance = new \OC\Files\Storage\DAV($this->config['webdav']);
+		if (isset($config['wait'])) {
+			$this->waitDelay = $config['wait'];
+		}
+		$config['root'] .= '/' . $id; //make sure we have an new empty folder to work in
+		$this->instance = new \OC\Files\Storage\DAV($config);
 		$this->instance->mkdir('/');
 	}
 

@@ -16,6 +16,9 @@ fi
 
 echo "Docker executable found - stop and remove docker containers"
 
+# retrieve current folder to remove the config from the parent folder
+thisFolder=`echo $0 | replace "env/stopDocker.webdav.sh" ""`
+
 ## webdav
 
 docker ps
@@ -28,9 +31,4 @@ for container in `docker ps | grep morrisjobke/webdav | cut -f 1 -d " "`; do
     docker rm $container
 done;
 
-# sed explaination could be found in setupDocker.sh
-#
-# change config back
-#
-sed -i "/'webdav'=>array/,/),/ s/run.*/run'=>false,/"                         apps/files_external/tests/config.php
-sed -i "/'webdav'=>array/,/),/ s/host.*/host'=>'localhost',/"                 apps/files_external/tests/config.php
+rm $thisFolder/config.webdav.php
