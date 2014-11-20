@@ -16,9 +16,6 @@ class DAV extends Storage {
 		parent::setUp();
 
 		$id = $this->getUniqueID();
-		if(!file_exists('files_external/tests/config.webdav.php')) {
-			$this->markTestSkipped('WebDAV backend not configured');
-		}
 		$config = include('files_external/tests/config.webdav.php');
 		if ( ! is_array($config) or !$config['run']) {
 			$this->markTestSkipped('WebDAV backend not configured');
