@@ -200,6 +200,62 @@ class Tags implements \OCP\ITags {
 	}
 
 	/**
+	 * Get the list of tags for the given ids.
+	 *
+	 * @param array|int $objIds
+	 * @return array of tags ids, tag names and object ids
+	 */
+	public function getTagsForObjects($objIds) {
+		if (!is_array($objIds)) {
+			$objIds = array($objIds);
+		}
+
+		$entries = array();
+
+		$sql = 'SELECT `category`, `categoryid`, `objid` ' .
+			'FROM `' . self::RELATION_TABLE . '` r, `' . self::TAG_TABLE . '` ' .
+			'WHERE `categoryid` = `id` AND `uid` = ? AND r.`type` = ? AND `objid` IN (?)';
+
+
+		try {
+			// use prepared statement when only single $objIds
+			if (count($objIds) === 1) {
+				$stmt = \OCP\DB::prepare($sql);
+				$result = $stmt->execute(array($this->user, $this->type, (int)$objIds[0]));
+				while ($row = $result->fetchRow()) {
+					$entries[] = array(
+						'id' => (int)$row['objid'],
+						'tag' => $row['category']
+					);
+				}
+			} else {
+				$conn = \OC_DB::getConnection($sql);
+				$result = $conn->executeQuery(
+					$sql,
+					array($this->user, $this->type, $objIds),
+					array(null, null, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY)
+				);
+				while ($row = $result->fetch()) {
+					$entries[] = array(
+						'id' => (int)$row['objid'],
+						'tag' => $row['category']
+					);
+				}
+			}
+			if (\OCP\DB::isError($result)) {
+				\OCP\Util::writeLog('core', __METHOD__. 'DB error: ' . \OCP\DB::getErrorMessage($result), \OCP\Util::ERROR);
+				return false;
+			}
+		} catch(\Exception $e) {
+			\OCP\Util::writeLog('core', __METHOD__.', exception: '.$e->getMessage(),
+				\OCP\Util::ERROR);
+			return false;
+		}
+
+		return $entries;
+	}
+
+	/**
 	* Get the a list if items tagged with $tag.
 	*
 	* Throws an exception if the tag could not be found.

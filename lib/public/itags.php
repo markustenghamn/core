@@ -76,7 +76,22 @@ interface ITags {
 	public function getTags();
 
 	/**
-	* Get the a list if items tagged with $tag.
+	 * Get a list of tags for the given item ids.
+	 *
+	 * This returns an array with object id / tag name:
+	 * [
+	 *   ['id' => 1, 'tag' => 'First tag'],
+	 *   ['id' => 1, 'tag' => 'Second tag'],
+	 *   ['id' => 2, 'tag' => 'First tag'],
+	 * ]
+	 *
+	 * @param array|int $objIds item ids
+	 * @return array of tag names and object ids
+	 */
+	public function getTagsForObjects($objIds);
+
+	/**
+	* Get a list of items tagged with $tag.
 	*
 	* Throws an exception if the tag could not be found.
 	*
