@@ -95,30 +95,22 @@ class Updater extends BasicEmitter {
 		$url = $updaterUrl . '?version=' . $versionString;
 
 		// set a sensible timeout of 10 sec to stay responsive even if the update server is down.
-		$ctx = stream_context_create(
-			array(
-				'http' => array(
-					'timeout' => 10
-				)
-			)
-		);
-		$xml = @file_get_contents($url, 0, $ctx);
-		if ($xml == false) {
-			return array();
-		}
-		$loadEntities = libxml_disable_entity_loader(true);
-		$data = @simplexml_load_string($xml);
-		libxml_disable_entity_loader($loadEntities);
 
 		$tmp = array();
-		$tmp['version'] = $data->version;
-		$tmp['versionstring'] = $data->versionstring;
-		$tmp['url'] = $data->url;
-		$tmp['web'] = $data->web;
+		$xml = \OC::$server->getHTTPHelper()->getUrlContent($url);
+		if ($xml !== false) {
+			$loadEntities = libxml_disable_entity_loader(true);
+			$data = @simplexml_load_string($xml);
+			libxml_disable_entity_loader($loadEntities);
+
+			$tmp['version'] = $data->version;
+			$tmp['versionstring'] = $data->versionstring;
+			$tmp['url'] = $data->url;
+			$tmp['web'] = $data->web;
+		}
 
 		// Cache the result
-		\OC_Appconfig::setValue('core', 'lastupdateResult', json_encode($data));
-
+		\OC_Appconfig::setValue('core', 'lastupdateResult', json_encode($tmp));
 		return $tmp;
 	}
 
